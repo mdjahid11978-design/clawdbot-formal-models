@@ -1,0 +1,66 @@
+{
+  "groups": {
+    "group:memory": [
+      "memory_search",
+      "memory_get"
+    ],
+    "group:web": [
+      "web_search",
+      "web_fetch"
+    ],
+    "group:fs": [
+      "read",
+      "write",
+      "edit",
+      "apply_patch"
+    ],
+    "group:runtime": [
+      "exec",
+      "process"
+    ],
+    "group:sessions": [
+      "sessions_list",
+      "sessions_history",
+      "sessions_send",
+      "sessions_spawn",
+      "session_status"
+    ],
+    "group:ui": [
+      "browser",
+      "canvas"
+    ],
+    "group:automation": [
+      "cron",
+      "gateway"
+    ],
+    "group:messaging": [
+      "message"
+    ],
+    "group:nodes": [
+      "nodes"
+    ],
+    "group:clawdbot": [
+      "browser",
+      "canvas",
+      "nodes",
+      "cron",
+      "message",
+      "gateway",
+      "agents_list",
+      "sessions_list",
+      "sessions_history",
+      "sessions_send",
+      "sessions_spawn",
+      "session_status",
+      "memory_search",
+      "memory_get",
+      "web_search",
+      "web_fetch",
+      "image"
+    ]
+  },
+  "aliases": {
+    "bash": "exec",
+    "apply-patch": "apply_patch"
+  }
+}
