@@ -73,4 +73,10 @@ of tools documented in `multi-agent-sandbox-tools.md`.
 **Statement:** Elevated mode requires BOTH the global baseline (`tools.elevated`)
 AND the agent-specific elevated gate (`agents.list[].tools.elevated`) to allow.
 
-**Status:** TODO (encode and model-check)
+**TLA+ invariant:** `Inv_ElevatedRequiresBoth` in `tla/specs/ElevatedGating.tla`
+
+**Scenarios:**
+- `tla/models/elevated_ok.cfg`
+
+**Negative test (should FAIL):**
+- `tla/models/elevated_negative_or_bug.cfg` with `tla/specs/ElevatedGating_BadOr.tla`

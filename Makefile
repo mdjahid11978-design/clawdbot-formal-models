@@ -1,7 +1,7 @@
 TLC=./bin/tlc
 MODEL?=tla/models/basic.cfg
 
-.PHONY: tlc precedence precedence-negative groups groups-negative
+.PHONY: tlc precedence precedence-negative groups groups-negative elevated elevated-negative
 
 # Run TLC with a pinned, in-repo model config
 
@@ -23,3 +23,11 @@ groups:
 
 groups-negative:
 	$(TLC) -workers auto -config tla/models/group_memory_bad_missing.cfg tla/specs/ToolGroupExpansion.tla
+
+# Elevated gating checks
+
+elevated:
+	$(TLC) -workers auto -config tla/models/elevated_ok.cfg tla/specs/ElevatedGating.tla
+
+elevated-negative:
+	$(TLC) -workers auto -config tla/models/elevated_negative_or_bug.cfg tla/specs/ElevatedGating_BadOr.tla
