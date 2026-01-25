@@ -14,10 +14,17 @@ This repo currently contains a **TLA+** model-checking setup (CLI TLC via `tla2t
 Prereqs:
 - Java 11+ (Java 21 works)
 
-Run TLC:
+Run TLC (default model):
 
 ```bash
-./bin/tlc -workers auto -deadlock tla/specs/ClawdbotSecurity.tla
+make tlc
+```
+
+Run a specific scenario model:
+
+```bash
+make tlc MODEL=tla/models/discord_shared.cfg
+make tlc MODEL=tla/models/dm_main.cfg
 ```
 
 ## Structure
