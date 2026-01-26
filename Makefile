@@ -1,7 +1,7 @@
 TLC=./bin/tlc
 MODEL?=tla/models/basic.cfg
 
-.PHONY: tlc precedence precedence-negative groups groups-negative elevated elevated-negative nodes-policy nodes-policy-negative attacker attacker-negative attacker-nodes-negative attacker-nodes-allowlist attacker-nodes-allowlist-negative approvals approvals-negative approvals-token approvals-token-negative nodes-pipeline nodes-pipeline-negative
+.PHONY: tlc precedence precedence-negative groups groups-negative elevated elevated-negative nodes-policy nodes-policy-negative attacker attacker-negative attacker-nodes-negative attacker-nodes-allowlist attacker-nodes-allowlist-negative approvals approvals-negative approvals-token approvals-token-negative nodes-pipeline nodes-pipeline-negative gateway-exposure gateway-exposure-negative
 
 # Run TLC with a pinned, in-repo model config
 
@@ -79,3 +79,11 @@ nodes-pipeline:
 
 nodes-pipeline-negative:
 	$(TLC) -workers auto -deadlock -config tla/models/nodes_pipeline_negative_replay.cfg tla/specs/NodesPipelineHarness_BadReplay.tla
+
+# Gateway exposure / no-auth beyond loopback
+
+gateway-exposure:
+	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_safe.cfg tla/specs/GatewayExposureHarness.tla
+
+gateway-exposure-negative:
+	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_unsafe.cfg tla/specs/GatewayExposureHarness.tla
