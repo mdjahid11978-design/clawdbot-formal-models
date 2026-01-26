@@ -1,7 +1,7 @@
 TLC=./bin/tlc
 MODEL?=tla/models/basic.cfg
 
-.PHONY: tlc precedence precedence-negative groups groups-negative elevated elevated-negative nodes-policy nodes-policy-negative attacker attacker-negative attacker-nodes-negative attacker-nodes-allowlist attacker-nodes-allowlist-negative approvals approvals-negative approvals-token approvals-token-negative nodes-pipeline nodes-pipeline-negative gateway-exposure gateway-exposure-negative gateway-exposure-v2 gateway-exposure-v2-negative gateway-exposure-v2-protected gateway-exposure-v2-protected-negative
+.PHONY: tlc precedence precedence-negative groups groups-negative elevated elevated-negative nodes-policy nodes-policy-negative attacker attacker-negative attacker-nodes-negative attacker-nodes-allowlist attacker-nodes-allowlist-negative approvals approvals-negative approvals-token approvals-token-negative nodes-pipeline nodes-pipeline-negative gateway-exposure gateway-exposure-negative gateway-exposure-v2 gateway-exposure-v2-negative gateway-exposure-v2-protected gateway-exposure-v2-protected-negative gateway-exposure-v2-unsafe-custom gateway-exposure-v2-unsafe-tailnet gateway-exposure-v2-protected-custom gateway-exposure-v2-protected-tailnet gateway-exposure-v2-protected-password
 
 # Run TLC with a pinned, in-repo model config
 
@@ -103,3 +103,20 @@ gateway-exposure-v2-protected:
 # Credentialed attacker can still connect (expected reachability)
 gateway-exposure-v2-protected-negative:
 	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_v2_protected_lan_token_with_creds.cfg tla/specs/GatewayExposureHarnessV2.tla
+
+# More gateway exposure v2 cases
+
+gateway-exposure-v2-unsafe-custom:
+	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_v2_unsafe_custom_noauth.cfg tla/specs/GatewayExposureHarnessV2.tla
+
+gateway-exposure-v2-unsafe-tailnet:
+	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_v2_unsafe_tailnet_noauth.cfg tla/specs/GatewayExposureHarnessV2.tla
+
+gateway-exposure-v2-protected-custom:
+	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_v2_protected_custom_token_no_creds.cfg tla/specs/GatewayExposureHarnessV2.tla
+
+gateway-exposure-v2-protected-tailnet:
+	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_v2_protected_tailnet_token_no_creds.cfg tla/specs/GatewayExposureHarnessV2.tla
+
+gateway-exposure-v2-protected-password:
+	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_v2_protected_lan_password_no_creds.cfg tla/specs/GatewayExposureHarnessV2.tla
