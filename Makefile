@@ -1,7 +1,7 @@
 TLC=./bin/tlc
 MODEL?=tla/models/basic.cfg
 
-.PHONY: tlc precedence precedence-negative groups groups-negative elevated elevated-negative nodes-policy nodes-policy-negative attacker attacker-negative attacker-nodes-negative attacker-nodes-allowlist attacker-nodes-allowlist-negative approvals approvals-negative approvals-token approvals-token-negative nodes-pipeline nodes-pipeline-negative gateway-exposure gateway-exposure-negative
+.PHONY: tlc precedence precedence-negative groups groups-negative elevated elevated-negative nodes-policy nodes-policy-negative attacker attacker-negative attacker-nodes-negative attacker-nodes-allowlist attacker-nodes-allowlist-negative approvals approvals-negative approvals-token approvals-token-negative nodes-pipeline nodes-pipeline-negative gateway-exposure gateway-exposure-negative gateway-exposure-v2 gateway-exposure-v2-negative
 
 # Run TLC with a pinned, in-repo model config
 
@@ -87,3 +87,10 @@ gateway-exposure:
 
 gateway-exposure-negative:
 	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_unsafe.cfg tla/specs/GatewayExposureHarness.tla
+
+# Refined gateway exposure model (real bind modes + auth auto)
+gateway-exposure-v2:
+	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_v2_safe_loopback.cfg tla/specs/GatewayExposureHarnessV2.tla
+
+gateway-exposure-v2-negative:
+	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_v2_unsafe_lan_noauth.cfg tla/specs/GatewayExposureHarnessV2.tla
