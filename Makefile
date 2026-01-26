@@ -1,7 +1,7 @@
 TLC=./bin/tlc
 MODEL?=tla/models/basic.cfg
 
-.PHONY: tlc precedence precedence-negative groups groups-negative elevated elevated-negative nodes-policy nodes-policy-negative attacker attacker-negative attacker-nodes-negative attacker-nodes-allowlist attacker-nodes-allowlist-negative approvals approvals-negative approvals-token approvals-token-negative nodes-pipeline nodes-pipeline-negative gateway-exposure gateway-exposure-negative gateway-exposure-v2 gateway-exposure-v2-negative gateway-exposure-v2-protected gateway-exposure-v2-protected-negative gateway-exposure-v2-unsafe-custom gateway-exposure-v2-unsafe-tailnet gateway-exposure-v2-protected-custom gateway-exposure-v2-protected-tailnet gateway-exposure-v2-protected-password gateway-exposure-v2-unsafe-auto gateway-exposure-v2-protected-auto
+.PHONY: tlc precedence precedence-negative groups groups-negative elevated elevated-negative nodes-policy nodes-policy-negative attacker attacker-negative attacker-nodes-negative attacker-nodes-allowlist attacker-nodes-allowlist-negative approvals approvals-negative approvals-token approvals-token-negative nodes-pipeline nodes-pipeline-negative gateway-exposure gateway-exposure-negative gateway-exposure-v2 gateway-exposure-v2-negative gateway-exposure-v2-protected gateway-exposure-v2-protected-negative gateway-exposure-v2-unsafe-custom gateway-exposure-v2-unsafe-tailnet gateway-exposure-v2-protected-custom gateway-exposure-v2-protected-tailnet gateway-exposure-v2-protected-password gateway-exposure-v2-unsafe-auto gateway-exposure-v2-protected-auto gateway-auth-conformance gateway-auth-conformance-negative
 
 # Run TLC with a pinned, in-repo model config
 
@@ -126,3 +126,11 @@ gateway-exposure-v2-unsafe-auto:
 
 gateway-exposure-v2-protected-auto:
 	$(TLC) -workers auto -deadlock -config tla/models/gateway_exposure_v2_protected_auto_token_no_creds.cfg tla/specs/GatewayExposureHarnessV2.tla
+
+# Gateway auth conformance harness (code-shaped)
+
+gateway-auth-conformance:
+	$(TLC) -workers auto -deadlock -config tla/models/gateway_auth_conformance_safe.cfg tla/specs/GatewayAuthConformanceHarness.tla
+
+gateway-auth-conformance-negative:
+	$(TLC) -workers auto -deadlock -config tla/models/gateway_auth_conformance_unsafe.cfg tla/specs/GatewayAuthConformanceHarness.tla
