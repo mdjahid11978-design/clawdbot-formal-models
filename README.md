@@ -1,31 +1,24 @@
 # clawdbot-formal-models
 
-Formal models of **Clawdbot security protocols**, with a focus on:
+Machine-checkable **security models** for Clawdbot, primarily in **TLA+** checked with **TLC**.
 
-- tool-gating (what actions are allowed from which channels/providers)
-- memory isolation (what can be read/written in which session types)
-- external side-effects (messaging, browser control, gateway config/update)
-- approval / escalation paths ("ask-first" boundaries, elevated execution)
+This repo is intentionally practical: it acts as a **security regression suite**.
 
-This repo currently contains a **TLA+** model-checking setup (CLI TLC via `tla2tools.jar`).
+- **Green models** should pass (no invariant violation).
+- **Red models** are deliberately buggy variants that should fail with a **counterexample trace**.
 
 ## Quickstart (TLA+)
 
 Prereqs:
-- Java 11+ (Java 21 works)
+- Java 11+ (Java 21 recommended)
 
-Run TLC (default model):
-
-```bash
-make tlc
-```
-
-Run a specific scenario model:
+Run a specific target:
 
 ```bash
-make tlc MODEL=tla/models/discord_shared.cfg
-make tlc MODEL=tla/models/dm_main.cfg
+make <target>
 ```
+
+See `docs/formal-models.md` for the recommended “v1 publish” run set.
 
 ## Structure
 
@@ -52,8 +45,13 @@ node scripts/extract-tool-groups.mjs
 Output:
 - `generated/tool-groups.json`
 
+## Key docs
+
+- `docs/formal-models.md` — how to run, interpret green/red, and suggested CI approach
+- `docs/security-claims.md` — claim inventory
+- `docs/verification-roadmap.md` — roadmap for expanding fidelity/coverage
+
 ## Next steps
 
-1. Extend conformance to cover policy precedence and channel-specific action gates.
-2. Add an explicit attacker model (shared-channel adversary) and end-to-end invariants.
-3. Iterate with counterexamples until the invariants match reality.
+- Add CI to run TLC on PRs and upload counterexample traces as artifacts.
+- Deepen fidelity: pairing-store concurrency/locking, provider-specific ingress nuances, routing identity-link semantics.
