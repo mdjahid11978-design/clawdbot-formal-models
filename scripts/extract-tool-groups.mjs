@@ -43,14 +43,21 @@ function evalObjectLiteral(src) {
 const groups = evalObjectLiteral(groupsSrc);
 const aliases = evalObjectLiteral(aliasesSrc);
 
-// Back-compat: project rename.
-// The models historically used `group:clawdbot`. Openclaw renamed this to `group:openclaw`.
-// Keep both keys to avoid churn in downstream specs/tests that reference the historical name.
-if (groups['group:openclaw'] && !groups['group:clawdbot']) {
-  groups['group:clawdbot'] = groups['group:openclaw'];
-}
-if (groups['group:clawdbot'] && !groups['group:openclaw']) {
-  groups['group:openclaw'] = groups['group:clawdbot'];
+// Back-compat: project rename(s).
+// Historically: `group:clawdbot`.
+// Later: openclaw renamed this to `group:openclaw`.
+// Current in this repo: `group:moltbot`.
+// Keep all present aliases identical to avoid churn in downstream specs/tests
+// and in cross-repo conformance checks.
+
+const aliases = ['group:clawdbot', 'group:openclaw', 'group:moltbot'];
+
+// Find the first defined alias as the canonical source.
+const firstKey = aliases.find((k) => groups[k]);
+if (firstKey) {
+  for (const k of aliases) {
+    if (!groups[k]) groups[k] = groups[firstKey];
+  }
 }
 
 fs.mkdirSync(path.dirname(out), { recursive: true });
