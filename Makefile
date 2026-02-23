@@ -1,7 +1,7 @@
 TLC=./bin/tlc
 MODEL?=tla/models/basic.cfg
 
-.PHONY: tlc precedence precedence-negative groups groups-negative elevated elevated-negative nodes-policy nodes-policy-negative attacker attacker-negative attacker-nodes-negative attacker-nodes-allowlist attacker-nodes-allowlist-negative approvals approvals-negative approvals-token approvals-token-negative nodes-pipeline nodes-pipeline-negative gateway-exposure gateway-exposure-negative gateway-exposure-v2 gateway-exposure-v2-negative gateway-exposure-v2-protected gateway-exposure-v2-protected-negative gateway-exposure-v2-unsafe-custom gateway-exposure-v2-unsafe-tailnet gateway-exposure-v2-protected-custom gateway-exposure-v2-protected-tailnet gateway-exposure-v2-protected-password gateway-exposure-v2-unsafe-auto gateway-exposure-v2-protected-auto gateway-auth-conformance gateway-auth-conformance-negative gateway-auth-tailscale gateway-auth-tailscale-negative gateway-auth-proxy gateway-auth-proxy-negative pairing pairing-negative pairing-cap pairing-cap-negative pairing-idempotency pairing-idempotency-negative pairing-refresh pairing-refresh-negative pairing-refresh-race pairing-refresh-race-negative ingress-gating ingress-gating-negative ingress-idempotency ingress-idempotency-negative ingress-dedupe-fallback ingress-dedupe-fallback-negative ingress-trace ingress-trace-negative ingress-trace2 ingress-trace2-negative routing-isolation routing-isolation-negative routing-precedence routing-precedence-negative pairing-race pairing-race-negative routing-identitylinks routing-identitylinks-negative routing-identity-transitive routing-identity-transitive-negative routing-identity-symmetry routing-identity-symmetry-negative routing-identity-channel-override routing-identity-channel-override-negative routing-thread-parent routing-thread-parent-negative discord-pluralkit discord-pluralkit-negative ingress-retry ingress-retry-negative session-key-stability session-key-stability-negative session-explosion-bound config-normalization config-normalization-negative queue-drain delivery-route-stability delivery-route-stability-negative delivery-pipeline delivery-pipeline-negative retry-termination retry-termination-negative retry-eventual-success retry-eventual-success-negative no-cross-stream no-cross-stream-negative multi-event-eventual-emission multi-event-eventual-emission-negative group-alias-check
+.PHONY: tlc precedence precedence-negative groups groups-negative elevated elevated-negative nodes-policy nodes-policy-negative attacker attacker-negative attacker-nodes-negative attacker-nodes-allowlist attacker-nodes-allowlist-negative approvals approvals-negative approvals-token approvals-token-negative nodes-pipeline nodes-pipeline-negative gateway-exposure gateway-exposure-negative gateway-exposure-v2 gateway-exposure-v2-negative gateway-exposure-v2-protected gateway-exposure-v2-protected-negative gateway-exposure-v2-unsafe-custom gateway-exposure-v2-unsafe-tailnet gateway-exposure-v2-protected-custom gateway-exposure-v2-protected-tailnet gateway-exposure-v2-protected-password gateway-exposure-v2-unsafe-auto gateway-exposure-v2-protected-auto gateway-auth-conformance gateway-auth-conformance-negative gateway-auth-tailscale gateway-auth-tailscale-negative gateway-auth-proxy gateway-auth-proxy-negative pairing pairing-negative pairing-cap pairing-cap-negative pairing-idempotency pairing-idempotency-negative pairing-refresh pairing-refresh-negative pairing-refresh-race pairing-refresh-race-negative ingress-gating ingress-gating-negative ingress-idempotency ingress-idempotency-negative ingress-dedupe-fallback ingress-dedupe-fallback-negative ingress-trace ingress-trace-negative ingress-trace2 ingress-trace2-negative routing-isolation routing-isolation-negative routing-precedence routing-precedence-negative pairing-race pairing-race-negative routing-identitylinks routing-identitylinks-negative routing-identity-transitive routing-identity-transitive-negative routing-identity-symmetry routing-identity-symmetry-negative routing-identity-channel-override routing-identity-channel-override-negative routing-thread-parent routing-thread-parent-negative discord-pluralkit discord-pluralkit-negative ingress-retry ingress-retry-negative session-key-stability session-key-stability-negative session-explosion-bound config-normalization config-normalization-negative queue-drain delivery-route-stability delivery-route-stability-negative delivery-pipeline delivery-pipeline-negative retry-termination retry-termination-negative retry-eventual-success retry-eventual-success-negative no-cross-stream no-cross-stream-negative multi-event-eventual-emission multi-event-eventual-emission-negative dedupe-collision-fallback dedupe-collision-fallback-negative crash-restart-dedupe crash-restart-dedupe-negative two-worker-dedupe two-worker-dedupe-negative openclaw-session-key-conformance openclaw-session-key-conformance-negative routing-thread-parent-channel-override routing-thread-parent-channel-override-negative routing-trirule routing-trirule-negative gateway-auth-proxy-header-spoof gateway-auth-proxy-header-spoof-negative reaction-session-binding reaction-session-binding-negative message-edit-session-binding message-edit-session-binding-negative thread-parent-reaction-binding thread-parent-reaction-binding-negative message-delete-session-binding message-delete-session-binding-negative indirect-prompt-injection indirect-prompt-injection-negative multi-channel-identity-collision multi-channel-identity-collision-negative discord-role-gating discord-role-gating-negative discord-role-gating-thread-parent discord-role-gating-thread-parent-negative message-lifecycle-session-key message-lifecycle-session-key-negative taint-propagation taint-propagation-negative policy-hot-reload policy-hot-reload-negative multi-channel-identity-override multi-channel-identity-override-negative discord-interaction-idempotency discord-interaction-idempotency-negative discord-interaction-role-thread discord-interaction-role-thread-negative group-alias-check
 
 # Run TLC with a pinned, in-repo model config
 
@@ -382,6 +382,174 @@ multi-event-eventual-emission:
 
 multi-event-eventual-emission-negative:
 	$(TLC) -workers 1 -deadlock -config tla/models/multi_event_eventual_emission_negative.cfg tla/specs/MultiEventEventualEmissionHarness_BadNoE2.tla
+
+# Safety: dedupe-key collision + fallback
+
+dedupe-collision-fallback:
+	$(TLC) -workers 1 -config tla/models/dedupe_collision_fallback_ok.cfg tla/specs/DedupeCollisionFallbackHarness.tla
+
+dedupe-collision-fallback-negative:
+	$(TLC) -workers 1 -config tla/models/dedupe_collision_fallback_negative.cfg tla/specs/DedupeCollisionFallbackHarness_BadNoFallback.tla
+
+# Reliability: crash/restart keeps dedupe marker (no duplicate emits)
+
+crash-restart-dedupe:
+	$(TLC) -workers 1 -config tla/models/crash_restart_dedupe_ok.cfg tla/specs/CrashRestartDedupeHarness.tla
+
+crash-restart-dedupe-negative:
+	$(TLC) -workers 1 -config tla/models/crash_restart_dedupe_negative.cfg tla/specs/CrashRestartDedupeHarness_BadVolatile.tla
+
+# Concurrency: two-worker dedupe atomicity
+
+two-worker-dedupe:
+	$(TLC) -workers 1 -config tla/models/two_worker_dedupe_ok.cfg tla/specs/TwoWorkerDedupeAtomicityHarness.tla
+
+two-worker-dedupe-negative:
+	$(TLC) -workers 1 -config tla/models/two_worker_dedupe_negative.cfg tla/specs/TwoWorkerDedupeAtomicityHarness_BadNonAtomic.tla
+
+# Tight OpenClaw conformance: thread session key binds to parent
+
+openclaw-session-key-conformance:
+	$(TLC) -workers 1 -config tla/models/openclaw_session_key_conformance_ok.cfg tla/specs/OpenClawSessionKeyConformanceHarness.tla
+
+openclaw-session-key-conformance-negative:
+	$(TLC) -workers 1 -config tla/models/openclaw_session_key_conformance_negative.cfg tla/specs/OpenClawSessionKeyConformanceHarness_BadThreadUsesThreadId.tla
+
+# Conformance: thread inherits parent channel override (scope)
+
+routing-thread-parent-channel-override:
+	$(TLC) -workers 1 -config tla/models/routing_thread_parent_channel_override_ok.cfg tla/specs/RoutingThreadParentChannelOverrideHarness.tla
+
+routing-thread-parent-channel-override-negative:
+	$(TLC) -workers 1 -config tla/models/routing_thread_parent_channel_override_negative.cfg tla/specs/RoutingThreadParentChannelOverrideHarness_BadThreadOverrideWins.tla
+
+# Combined: thread-parent + channel override + identity-link collapse gating
+
+routing-trirule:
+	$(TLC) -workers 1 -config tla/models/routing_trirule_ok.cfg tla/specs/RoutingTriRuleHarness.tla
+
+routing-trirule-negative:
+	$(TLC) -workers 1 -config tla/models/routing_trirule_negative.cfg tla/specs/RoutingTriRuleHarness_BadThreadUsesThreadScope.tla
+
+# Gateway auth: trusted proxy header spoof
+
+gateway-auth-proxy-header-spoof:
+	$(TLC) -workers 1 -config tla/models/gateway_auth_proxy_header_spoof_ok.cfg tla/specs/GatewayAuthTrustedProxyHeaderSpoofHarness.tla
+
+gateway-auth-proxy-header-spoof-negative:
+	$(TLC) -workers 1 -config tla/models/gateway_auth_proxy_header_spoof_negative.cfg tla/specs/GatewayAuthTrustedProxyHeaderSpoofHarness_BadTrustHeadersAlways.tla
+
+# Conformance: reactions bind to the message session
+
+reaction-session-binding:
+	$(TLC) -workers 1 -config tla/models/reaction_session_binding_ok.cfg tla/specs/ReactionSessionBindingHarness.tla
+
+reaction-session-binding-negative:
+	$(TLC) -workers 1 -config tla/models/reaction_session_binding_negative.cfg tla/specs/ReactionSessionBindingHarness_BadReactionOwnSession.tla
+
+# Conformance: message edits bind to original message session
+
+message-edit-session-binding:
+	$(TLC) -workers 1 -config tla/models/message_edit_session_binding_ok.cfg tla/specs/MessageEditSessionBindingHarness.tla
+
+message-edit-session-binding-negative:
+	$(TLC) -workers 1 -config tla/models/message_edit_session_binding_negative.cfg tla/specs/MessageEditSessionBindingHarness_BadEditOwnSession.tla
+
+# Combined conformance: thread-parent binding + reaction binds to message
+
+thread-parent-reaction-binding:
+	$(TLC) -workers 1 -config tla/models/thread_parent_reaction_binding_ok.cfg tla/specs/ThreadParentReactionBindingHarness.tla
+
+thread-parent-reaction-binding-negative:
+	$(TLC) -workers 1 -config tla/models/thread_parent_reaction_binding_negative.cfg tla/specs/ThreadParentReactionBindingHarness_BadThreadOrReactionWrong.tla
+
+# Conformance: deletes bind to original message session
+
+message-delete-session-binding:
+	$(TLC) -workers 1 -config tla/models/message_delete_session_binding_ok.cfg tla/specs/MessageDeleteSessionBindingHarness.tla
+
+message-delete-session-binding-negative:
+	$(TLC) -workers 1 -config tla/models/message_delete_session_binding_negative.cfg tla/specs/MessageDeleteSessionBindingHarness_BadDeleteOwnSession.tla
+
+# Security: indirect prompt injection boundary (tainted external content)
+
+indirect-prompt-injection:
+	$(TLC) -workers 1 -config tla/models/indirect_prompt_injection_ok.cfg tla/specs/IndirectPromptInjectionBoundaryHarness.tla
+
+indirect-prompt-injection-negative:
+	$(TLC) -workers 1 -config tla/models/indirect_prompt_injection_negative.cfg tla/specs/IndirectPromptInjectionBoundaryHarness_BadTaintBypass.tla
+
+# Safety: multi-channel identity collision (no cross-platform collapse without explicit link)
+
+multi-channel-identity-collision:
+	$(TLC) -workers 1 -config tla/models/multi_channel_identity_collision_ok.cfg tla/specs/MultiChannelIdentityCollisionHarness.tla
+
+multi-channel-identity-collision-negative:
+	$(TLC) -workers 1 -config tla/models/multi_channel_identity_collision_negative.cfg tla/specs/MultiChannelIdentityCollisionHarness_BadDisplayNameUnifies.tla
+
+# Discord: role-gated interactions (slash commands/buttons)
+
+discord-role-gating:
+	$(TLC) -workers 1 -config tla/models/discord_role_gating_ok.cfg tla/specs/DiscordRoleGatingHarness.tla
+
+discord-role-gating-negative:
+	$(TLC) -workers 1 -config tla/models/discord_role_gating_negative.cfg tla/specs/DiscordRoleGatingHarness_BadIgnoresRole.tla
+
+# Discord: role gating must not be bypassed in threads (thread-parent context)
+
+discord-role-gating-thread-parent:
+	$(TLC) -workers 1 -config tla/models/discord_role_gating_thread_parent_ok.cfg tla/specs/DiscordRoleGatingThreadParentHarness.tla
+
+discord-role-gating-thread-parent-negative:
+	$(TLC) -workers 1 -config tla/models/discord_role_gating_thread_parent_negative.cfg tla/specs/DiscordRoleGatingThreadParentHarness_BadThreadOverridesRole.tla
+
+# Combined: message lifecycle (create/edit/delete/reaction) + thread-parent + retry stability
+
+message-lifecycle-session-key:
+	$(TLC) -workers 1 -config tla/models/message_lifecycle_session_key_ok.cfg tla/specs/MessageLifecycleSessionKeyStabilityHarness.tla
+
+message-lifecycle-session-key-negative:
+	$(TLC) -workers 1 -config tla/models/message_lifecycle_session_key_negative.cfg tla/specs/MessageLifecycleSessionKeyStabilityHarness_BadDeleteAnchorsWrong.tla
+
+# Security: taint propagation through prompt->toolcall pipeline
+
+taint-propagation:
+	$(TLC) -workers 1 -config tla/models/taint_propagation_ok.cfg tla/specs/TaintPropagationApprovalHarness.tla
+
+taint-propagation-negative:
+	$(TLC) -workers 1 -config tla/models/taint_propagation_negative.cfg tla/specs/TaintPropagationApprovalHarness_BadDropTaint.tla
+
+# Security: policy hot-reload safety (deny takes effect immediately)
+
+policy-hot-reload:
+	$(TLC) -workers 1 -config tla/models/policy_hot_reload_ok.cfg tla/specs/PolicyHotReloadSafetyHarness.tla
+
+policy-hot-reload-negative:
+	$(TLC) -workers 1 -config tla/models/policy_hot_reload_negative.cfg tla/specs/PolicyHotReloadSafetyHarness_BadStaleCache.tla
+
+# Composition: identity links + per-channel overrides
+
+multi-channel-identity-override:
+	$(TLC) -workers 1 -config tla/models/multi_channel_identity_override_ok.cfg tla/specs/MultiChannelIdentityOverrideHarness.tla
+
+multi-channel-identity-override-negative:
+	$(TLC) -workers 1 -config tla/models/multi_channel_identity_override_negative.cfg tla/specs/MultiChannelIdentityOverrideHarness_BadIgnoresOverrides.tla
+
+# Discord: interaction idempotency (dedupe retried button/modal events)
+
+discord-interaction-idempotency:
+	$(TLC) -workers 1 -config tla/models/discord_interaction_idempotency_ok.cfg tla/specs/DiscordInteractionIdempotencyHarness.tla
+
+discord-interaction-idempotency-negative:
+	$(TLC) -workers 1 -config tla/models/discord_interaction_idempotency_negative.cfg tla/specs/DiscordInteractionIdempotencyHarness_BadNoDedupe.tla
+
+# Discord: combined interaction retry + role gating + thread-parent
+
+discord-interaction-role-thread:
+	$(TLC) -workers 1 -config tla/models/discord_interaction_role_thread_ok.cfg tla/specs/DiscordInteractionRoleThreadHarness.tla
+
+discord-interaction-role-thread-negative:
+	$(TLC) -workers 1 -config tla/models/discord_interaction_role_thread_negative.cfg tla/specs/DiscordInteractionRoleThreadHarness_BadBypassOnRetry.tla
 
 group-alias-check:
 	node scripts/check-tool-group-alias.mjs

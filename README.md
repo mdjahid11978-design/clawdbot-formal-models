@@ -2,6 +2,8 @@
 
 Machine-checkable **security models** for Clawdbot, primarily in **TLA+** checked with **TLC**.
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18452871.svg)](https://doi.org/10.5281/zenodo.18452871)
+
 This repo is intentionally practical: it acts as a **security regression suite**.
 
 - **Green models** should pass (no invariant violation).
