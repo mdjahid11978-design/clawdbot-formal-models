@@ -25,7 +25,7 @@ Negative suite (expected failures):
 
 ```bash
 make -k precedence-negative groups-negative elevated-negative nodes-policy-negative \
-  attacker-negative attacker-nodes-negative attacker-nodes-allowlist-negative attacker-nodes-allowlist-negative \
+  attacker-negative attacker-nodes-negative attacker-nodes-allowlist-negative \
   approvals-negative approvals-token-negative nodes-pipeline-negative \
   gateway-exposure-negative gateway-exposure-v2-negative gateway-exposure-v2-protected-negative \
   gateway-exposure-v2-unsafe-custom gateway-exposure-v2-unsafe-tailnet gateway-exposure-v2-unsafe-auto \

@@ -35,17 +35,37 @@ See `docs/formal-models.md` for the recommended “v1 publish” run set.
 Some checks are *conformance-style*: they validate that the formal model matches
 Clawdbot’s actual implementation constants.
 
-Currently we extract tool-group expansions and tool-name aliases from:
-- `../clawdbot/src/agents/tool-policy.ts`
+`scripts/extract-tool-groups.mjs` supports two source-selection modes:
+- If `OPENCLAW_REPO_DIR` or `CLAWDBOT_REPO_DIR` is set, it reads
+  `<that-dir>/src/agents/tool-policy.ts`.
+- Otherwise it falls back to `../clawdbot/src/agents/tool-policy.ts`.
 
-Generate the extracted constants:
+Generate the extracted constants (default fallback path):
 
 ```bash
 node scripts/extract-tool-groups.mjs
 ```
 
+Generate using an explicit checkout path:
+
+```bash
+OPENCLAW_REPO_DIR=../openclaw node scripts/extract-tool-groups.mjs
+```
+
 Output:
 - `generated/tool-groups.json`
+
+Run the alias-check regression test:
+
+```bash
+make group-alias-check-test
+```
+
+Run the full alias workflow (extract + validate + regression test):
+
+```bash
+make group-alias-full
+```
 
 ## Key docs
 
