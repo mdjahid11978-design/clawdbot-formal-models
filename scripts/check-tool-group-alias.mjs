@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
-const p = new URL('../generated/tool-groups.json', import.meta.url);
-const json = JSON.parse(fs.readFileSync(p, 'utf8'));
+const sourcePath = process.env.TOOL_GROUPS_JSON_PATH || new URL('../generated/tool-groups.json', import.meta.url);
+const json = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
 const g = json.groups || {};
 // The project has been renamed a few times; treat these as aliases.
@@ -33,18 +33,6 @@ if (c) {
   process.exit(0);
 }
 
-console.error('Expected group:moltbot or group:clawdbot/openclaw in generated/tool-groups.json');
+console.error('Expected group:moltbot or group:clawdbot/openclaw in tool groups input');
 console.error('Present keys:', Object.keys(g).sort().join(', '));
 process.exit(2);
-
-const as = JSON.stringify(a);
-const bs = JSON.stringify(b);
-
-if (as !== bs) {
-  console.error('Tool group alias mismatch: group:clawdbot != group:openclaw');
-  console.error('group:clawdbot:', a);
-  console.error('group:openclaw:', b);
-  process.exit(1);
-}
-
-console.log('OK: group:clawdbot and group:openclaw are identical.');
