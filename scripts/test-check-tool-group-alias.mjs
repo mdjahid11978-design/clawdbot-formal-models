@@ -11,6 +11,36 @@ const checkerPath = path.join(repoRoot, 'scripts', 'check-tool-group-alias.mjs')
 function runCase(name, payload, expectedCode, expectedText) {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'alias-check-'));
   const fixturePath = path.join(tmpDir, 'tool-groups.json');
+
+  try {
+    fs.writeFileSync(fixturePath, JSON.stringify(payload, null, 2));
+
+    const res = spawnSync(process.execPath, [checkerPath], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        TOOL_GROUPS_JSON_PATH: fixturePath,
+      },
+    });
+
+    if (res.status !== expectedCode) {
+      throw new Error(
+        `${name}: expected exit code ${expectedCode}, got ${res.status}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`
+      );
+    }
+
+    const combined = `${res.stdout}\n${res.stderr}`;
+    if (!combined.includes(expectedText)) {
+      throw new Error(
+        `${name}: expected output to include ${JSON.stringify(expectedText)}\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`
+      );
+    }
+
+    console.log(`PASS: ${name}`);
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
   fs.writeFileSync(fixturePath, JSON.stringify(payload, null, 2));
 
   const res = spawnSync(process.execPath, [checkerPath], {

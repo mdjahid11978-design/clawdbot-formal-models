@@ -20,6 +20,12 @@ Run a specific target:
 make <target>
 ```
 
+Run the lightweight build/validation workflow:
+
+```bash
+make build
+```
+
 See `docs/formal-models.md` for the recommended “v1 publish” run set.
 
 ## Structure
